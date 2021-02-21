@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{%block nav_btnl%}
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-outline-primary ml-2" data-bs-toggle="modal" data-bs-target="#LoginModal">
+    Login
+  </button>
+ 
+{%endblock nav_btnl%}
+
+{% block body%}
+<div class="container">
+<form method="POST" action="/signup" >
+    {% csrf_token %}
+    <div class="form-group my-3">
+      <label for="email">Email address</label>
+      <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email">
+    </div>
+
+    <div class="form-group my-4">
+      <label for="name">name</label>
+      <input type="text" class="form-control" id="name">
+    </div>
+
+    <div class="form-group my-4">
+        <label for="username">username</label>
+        <input type="text" class="form-control" id="username" placeholder="your username here" name="username">
+    </div>
+
+
+    <div class="form-group my-4">
+        <label for="password"> password</label>
+        <input type="password" class="form-control" id="password" placeholder="create password" name="password">
+    </div>
+
+    <div class="form-group my-4">
+        <label for="confpass">confirm password</label>
+        <input type="password" class="form-control" id="confpass" placeholder="confirm password" name="confirm_password">
+    </div>
+
+    <button type="submit" class="btn btn-primary">sign up</button>
+
+   
+  </form>
+
+</div>
+{% endblock body%}
+
+
+
+{% block modals%}
+<div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModelLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="LoginModelLabel">Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="/login">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="username" class="form-label">user name</label>
+              <input type="text" class="form-control" id="username" aria-describedby="emailHelp" placeholder="enter your username" required name='username'>
+
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="enter your password" name='password' required>
+            </div>
+      
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock modals %}

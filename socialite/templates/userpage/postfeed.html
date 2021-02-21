@@ -1,0 +1,137 @@
+{% extends 'base.html'%}
+{% block nav_btnl%}
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#PostModal">
+  Post
+</button>
+{% endblock nav_btnl%}
+
+{% block css %}
+
+#post_img{
+width:460px;
+height:360;
+}
+.post_div{
+  width:535px;
+}
+
+{% endblock css %}
+
+{% block body%}
+{% for i in posts %}
+<div class="container my-4 post_div" id="{{i.id}}">
+<div class="card">
+  
+    <h5 class="card-header"><a href="{% url 'userprofile' i.user %}" style="color: black;">{{i.user}}</a><small>{{i.date}}</small></h5>
+   
+    <div class="card-body">
+      {%if i.image %}
+      <p class="card-text">{{i.caption}} </p>
+      <img src="{{i.image.url}}" alt="image" id="post_img">
+
+      {% endif %}
+      <hr size="30px">
+      <button class="btn btn-light ml-3 like" id="{{i.id}}">
+        {% if i in liked_post %}
+       <a href="{% url 'like_dislike_post' %}" style="color:red;" id="like_text" >Liked</a>
+       {% else %}
+       <a href="{% url 'like_dislike_post' %}" style="color:red;" id="like_text" >Like</a>
+       {% endif %}
+      </button>
+     
+
+      <a role="button" class="btn btn-warning mx-3" href="{% url 'comment'%}">Comment</a>
+      <button class="btn btn-info mx-3">Repost</button>
+      {% if request.user == i.user %}
+      <a class="btn btn-danger ml-4 delete" href="{% url 'delpost' i.id %}" id="{{i.id}}">Delete</a>
+      {% endif %}
+      
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock body%}
+
+{% block modals %}
+<!-- Modal -->
+<div class="modal fade" id="PostModal" tabindex="-1" aria-labelledby="PostModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="PostModalLabel">show time</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+         <form  action="/userpage/post" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <label for="imag">image:</label>
+          <input type="file" name="image" id="image">
+          <br><br><br>
+          <label for="captions">Caption:</label><br>
+          <textarea name="captions" id="captions" cols="55" rows="10" placeholder="wow.." class="ml-4"></textarea>        
+          <!-- <hr size="8px"> -->
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">lets show</button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+{%endblock modals%}
+
+{% block js %}
+<script>
+
+$(".delete").click(function(e) { 
+  var id =  this.id ; 
+  var href = this.href;
+  console.log(href, id)  // get href from link
+  e.preventDefault();  // don't follow the link
+
+  $.ajax({
+      url: href,
+      data: {},
+  });
+
+  $("#"+id).fadeOut(1000);
+
+}); 
+
+$(".like").click(function(e) { 
+  var id =  this.id ; 
+  var href = $('.like').find('a').attr('href');
+  console.log(href,id)  // get href from link
+  e.preventDefault();  // don't follow the link
+
+   $.ajax({
+      url: href,
+      data:{'likeId':id},
+      success:function(response)
+      {
+        // console.log(response);
+        if(response.liked)
+        {
+          $('#like_text').html("Liked")
+        }
+      else
+      {
+        $('#like_text').html('Like')
+      }
+      }
+  });
+
+  // $("#"+id).fadeOut(1000);
+
+}); 
+
+
+
+</script>
+{% endblock js %}
+

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block css%}
+
+.userImage{
+width:200px;
+height:200px;
+border-radius:50%
+}
+.info{
+    padding-top:2%;
+    padding-left:2%;
+}
+hr
+{
+    border-top:5px #000000;
+}
+.pst{
+    width:350px;
+    height:200px;
+    margin-bottom:30px;
+}
+
+#follow{
+    color:blue
+}
+
+#follow:hover{
+    color:hover
+}
+
+{% endblock css%}
+
+{% block body%}
+<div class="container my-4">
+  <div class="media">
+      <div class="media-body info">
+        <img src="{{userImg.url}}" class="align-self-start mr-3 userImage" alt="...">
+
+          <h5 class="mt-0 ">{{user_obj.username}}
+            {% if connection and not request.user == user_obj %}
+            <a type="button" class="btn btn-outline-primary" id="follow" role="button" href="{%url 'follow' user_obj.username %}"><i>unfollow</i></a>
+            {% elif not connection and not request.user == user_obj%}
+           <a type="button" class="btn btn-outline-primary" id="follow" role="button" href="{%url 'follow' user_obj.username %}"><i>follow</i></a>
+            {% endif %}
+        </h5> 
+          <p>follower:{{follower}} following:{{following}}</p>
+          <p><b>{{bio}}</b></p>
+      </div>
+
+  </div>
+  <hr>
+  <div class='row'>
+      {% for i in posts %}
+            {% for j in i %}
+        <div class="col-md-4">
+           <img src="{{j.image.url}}" alt="Image" class="pst">
+       </div>
+       {% endfor %}
+       {% endfor %}
+  </div>
+</div>
+{% endblock body %}
+
+{% block js %}
+<script type="text/javascript">
+$('#follow').click(function(e){
+    e.preventDefault();
+    var href=this.href
+    $.ajax({
+        url:href,
+        success:function(response)
+        {
+            if(response['following'])
+            {
+                $('#follow').html('Unfollow');
+            }
+            else{
+                $('#follow').html('Follow');
+
+        }
+             }
+    })
+    // console.log(href)
+})
+</script>
+{% endblock js%}
+
+
+
